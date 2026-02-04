@@ -1,0 +1,13 @@
+# Grafana data
+grafana.db
+alerting/
+csv/
+plugins/
+png/
+
+# OS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/

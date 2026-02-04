@@ -8,10 +8,10 @@ Grafana dashboards for visualizing Victron Energy monitoring data.
 
 ## Overview
 
-Pre-configured Grafana dashboards for Victron monitoring:
-- 5 dashboards covering all aspects of energy monitoring
-- InfluxDB data source configuration
-- Shelly device control buttons
+Pre-configured Grafana with **zero manual setup**:
+- 5 dashboards auto-loaded on startup
+- InfluxDB data source auto-configured
+- Just run `docker compose up -d` and open browser
 
 ## Quick Start
 
@@ -39,37 +39,25 @@ open http://localhost:3000
 | **System** | GX/MQTT status, Docker stats |
 | **Errors** | Detailed error analysis |
 
-## Dashboard Files
+## Auto-Provisioning
 
-Dashboards are in the `dashboards/` directory:
-- `victron-overview.json` - Main overview
-- `victron-energy.json` - Energy details
-- `victron-env.json` - Environment & devices
-- `victron-sys.json` - System health
-- `errors.json` - Error monitoring
+Everything is automatically configured on container start:
 
-## Import Dashboards
-
-### Via UI
-1. Go to Dashboards → Import
-2. Upload JSON file from `dashboards/`
-3. Select InfluxDB data source
-
-### Via API
-```bash
-curl -X POST 'http://admin:victron123@localhost:3000/api/dashboards/db' \
-  -H 'Content-Type: application/json' \
-  -d @dashboards/victron-overview.json
+```
+provisioning/
+├── datasources/
+│   └── influxdb.yml      # InfluxDB connection (auto-configured)
+└── dashboards/
+    ├── victron.yml       # Dashboard provider config
+    └── json/
+        ├── victron-overview.json
+        ├── victron-energy.json
+        ├── victron-env.json
+        ├── victron-sys.json
+        └── errors.json
 ```
 
-## Data Source Configuration
-
-Configure InfluxDB data source:
-- **Type**: InfluxDB (Flux)
-- **URL**: http://influxdb:8086
-- **Organization**: victron
-- **Token**: victron-lab-token
-- **Default Bucket**: energy
+No manual import or configuration needed. Dashboards appear in the "Victron Energy" folder.
 
 ## Related Repositories
 

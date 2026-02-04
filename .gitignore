@@ -1,4 +1,8 @@
+# Environment
+.env
+
 # Grafana data
+data/
 grafana.db
 alerting/
 csv/

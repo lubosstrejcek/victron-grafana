@@ -1,0 +1,1093 @@
+{
+  "id": 9,
+  "panels": [
+    {
+      "gridPos": {
+        "h": 2,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 100,
+      "options": {
+        "content": "<div style=\"display: flex; gap: 10px; justify-content: center; align-items: center; height: 100%;\">\n<span style=\"background: #3274D9; color: white; padding: 8px 20px; border-radius: 4px; font-weight: bold;\">OVERVIEW</span>\n<a href=\"/d/victron-energy/victron-energy\" style=\"background: #464646; color: white; padding: 8px 20px; border-radius: 4px; text-decoration: none;\">Energy</a>\n<a href=\"/d/victron-env/victron-environment\" style=\"background: #464646; color: white; padding: 8px 20px; border-radius: 4px; text-decoration: none;\">Environment</a>\n<a href=\"/d/victron-sys/victron-system\" style=\"background: #464646; color: white; padding: 8px 20px; border-radius: 4px; text-decoration: none;\">System</a>\n</div>",
+        "mode": "html"
+      },
+      "title": "",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "dfc7vpajxvvuob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#C4162A",
+                "value": null
+              },
+              {
+                "color": "#FF9830",
+                "value": 20
+              },
+              {
+                "color": "#FADE2A",
+                "value": 40
+              },
+              {
+                "color": "#73BF69",
+                "value": 60
+              }
+            ]
+          },
+          "unit": "percent"
+        }
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 0,
+        "y": 2
+      },
+      "id": 1,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "showThresholdMarkers": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"energy\") |> range(start: -1m) |> filter(fn: (r) => r._measurement == \"battery\" and r._field == \"soc\") |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Battery",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "dfc7vpajxvvuob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#FADE2A",
+            "mode": "fixed"
+          },
+          "unit": "watt"
+        }
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 4,
+        "y": 2
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "dcSolar = from(bucket: \"energy\") |> range(start: -1m) |> filter(fn: (r) => r._measurement == \"solar\" and r._field == \"power\") |> last()\nacSolar = from(bucket: \"energy\") |> range(start: -1m) |> filter(fn: (r) => r._measurement == \"pvinverter\" and r._field == \"power\") |> last()\nunion(tables: [dcSolar, acSolar]) |> group() |> sum()",
+          "refId": "A"
+        }
+      ],
+      "title": "Solar",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "dfc7vpajxvvuob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#73BF69",
+                "value": null
+              },
+              {
+                "color": "#C4162A",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "watt"
+        }
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 8,
+        "y": 2
+      },
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"energy\") |> range(start: -1m) |> filter(fn: (r) => r._measurement == \"grid\" and r._field == \"power_total\") |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Grid",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "dfc7vpajxvvuob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#8AB8FF",
+            "mode": "fixed"
+          },
+          "unit": "watt"
+        }
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 12,
+        "y": 2
+      },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"energy\") |> range(start: -1m) |> filter(fn: (r) => r._measurement == \"inverter\" and r._field == \"ac_power\") |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Load",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "dfc7vpajxvvuob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#FF9830",
+                "value": null
+              },
+              {
+                "color": "#73BF69",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "watt"
+        }
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 2,
+        "x": 16,
+        "y": 2
+      },
+      "id": 5,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"energy\") |> range(start: -1m) |> filter(fn: (r) => r._measurement == \"battery\" and r._field == \"power\") |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Batt W",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "dfc7vpajxvvuob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#FF9830",
+                "value": null
+              },
+              {
+                "color": "#73BF69",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "volt"
+        }
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 2,
+        "x": 18,
+        "y": 2
+      },
+      "id": 6,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"energy\") |> range(start: -1m) |> filter(fn: (r) => r._measurement == \"battery\" and r._field == \"voltage\") |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Batt V",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "dfc7vpajxvvuob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#FF9830",
+                "value": null
+              },
+              {
+                "color": "#73BF69",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "amp"
+        }
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 2,
+        "x": 20,
+        "y": 2
+      },
+      "id": 7,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"energy\") |> range(start: -1m) |> filter(fn: (r) => r._measurement == \"battery\" and r._field == \"current\") |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Batt A",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "dfc7vpajxvvuob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#73BF69",
+                "value": null
+              },
+              {
+                "color": "#FADE2A",
+                "value": 35
+              },
+              {
+                "color": "#FF9830",
+                "value": 40
+              },
+              {
+                "color": "#C4162A",
+                "value": 45
+              }
+            ]
+          },
+          "unit": "celsius"
+        }
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 2,
+        "x": 22,
+        "y": 2
+      },
+      "id": 8,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"energy\") |> range(start: -1m) |> filter(fn: (r) => r._measurement == \"gx_health\" and r._field == \"battery_temp\") |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Batt °C",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "dfc7vpajxvvuob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "options": {
+                "-1": {
+                  "color": "#FF9830",
+                  "text": "DISCHARGING"
+                }
+              },
+              "type": "value"
+            },
+            {
+              "options": {
+                "0": {
+                  "color": "#8AB8FF",
+                  "text": "IDLE"
+                }
+              },
+              "type": "value"
+            },
+            {
+              "options": {
+                "1": {
+                  "color": "#73BF69",
+                  "text": "CHARGING"
+                }
+              },
+              "type": "value"
+            }
+          ]
+        }
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 16,
+        "y": 5
+      },
+      "id": 9,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "query": "current = from(bucket: \"energy\") |> range(start: -1m) |> filter(fn: (r) => r._measurement == \"battery\" and r._field == \"current\") |> last() |> findRecord(fn: (key) => true, idx: 0)\nfrom(bucket: \"energy\") |> range(start: -1m) |> filter(fn: (r) => r._measurement == \"battery\" and r._field == \"current\") |> last() |> map(fn: (r) => ({r with _value: if current._value > 0.5 then 1 else if current._value < -0.5 then -1 else 0}))",
+          "refId": "A"
+        }
+      ],
+      "title": "Batt State",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "dfc7vpajxvvuob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "color": "#C4162A",
+                  "text": "BLOCKED"
+                }
+              },
+              "type": "value"
+            },
+            {
+              "options": {
+                "1": {
+                  "color": "#73BF69",
+                  "text": "ALLOWED"
+                }
+              },
+              "type": "value"
+            }
+          ]
+        }
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 20,
+        "y": 5
+      },
+      "id": 10,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "query": "soc = from(bucket: \"energy\") |> range(start: -1m) |> filter(fn: (r) => r._measurement == \"battery\" and r._field == \"soc\") |> last() |> findRecord(fn: (key) => true, idx: 0)\nfrom(bucket: \"energy\") |> range(start: -1m) |> filter(fn: (r) => r._measurement == \"battery\" and r._field == \"soc\") |> last() |> map(fn: (r) => ({r with _value: if soc._value >= 80.0 then 1 else 0}))",
+          "refId": "A"
+        }
+      ],
+      "title": "EV Charging",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 8
+      },
+      "id": 11,
+      "title": "Quick Status",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "dfc7vpajxvvuob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "options": {
+                "1": {
+                  "color": "#73BF69",
+                  "text": "ONLINE"
+                }
+              },
+              "type": "value"
+            },
+            {
+              "options": {
+                "0": {
+                  "color": "#C4162A",
+                  "text": "OFFLINE"
+                }
+              },
+              "type": "value"
+            }
+          ]
+        }
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 0,
+        "y": 9
+      },
+      "id": 12,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"energy\") |> range(start: -1m) |> filter(fn: (r) => r._measurement == \"gx_health\" and r._field == \"online\") |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "GX Status",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "dfc7vpajxvvuob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "options": {
+                "1": {
+                  "color": "#73BF69",
+                  "text": "CONNECTED"
+                }
+              },
+              "type": "value"
+            },
+            {
+              "options": {
+                "0": {
+                  "color": "#C4162A",
+                  "text": "DISCONNECTED"
+                }
+              },
+              "type": "value"
+            }
+          ]
+        }
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 4,
+        "y": 9
+      },
+      "id": 13,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"energy\") |> range(start: -1m) |> filter(fn: (r) => r._measurement == \"mqtt_status\" and r._field == \"connected\") |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "MQTT",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "dfc7vpajxvvuob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#73BF69",
+                "value": null
+              },
+              {
+                "color": "#FADE2A",
+                "value": 5
+              },
+              {
+                "color": "#C4162A",
+                "value": 20
+              }
+            ]
+          }
+        }
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 8,
+        "y": 9
+      },
+      "id": 14,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"energy\") |> range(start: -24h) |> filter(fn: (r) => r._measurement == \"nodered_errors\" and r._field == \"error_count\") |> group() |> sum()",
+          "refId": "A"
+        }
+      ],
+      "title": "Errors (24h)",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "dfc7vpajxvvuob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#9933cc",
+            "mode": "fixed"
+          },
+          "decimals": 1,
+          "unit": "celsius"
+        }
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 3,
+        "x": 12,
+        "y": 9
+      },
+      "id": 15,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"energy\") |> range(start: -1m) |> filter(fn: (r) => r._measurement == \"ruuvi\" and r._field == \"temperature\") |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Temperature",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "dfc7vpajxvvuob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#C4162A",
+                "value": null
+              },
+              {
+                "color": "#FADE2A",
+                "value": 25
+              },
+              {
+                "color": "#73BF69",
+                "value": 50
+              }
+            ]
+          },
+          "unit": "percent"
+        }
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 3,
+        "x": 15,
+        "y": 9
+      },
+      "id": 16,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "showThresholdMarkers": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"energy\") |> range(start: -1m) |> filter(fn: (r) => r._measurement == \"tank\" and r._field == \"level_1\") |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Tank 1",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "dfc7vpajxvvuob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#C4162A",
+                "value": null
+              },
+              {
+                "color": "#FADE2A",
+                "value": 25
+              },
+              {
+                "color": "#73BF69",
+                "value": 50
+              }
+            ]
+          },
+          "unit": "percent"
+        }
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 3,
+        "x": 18,
+        "y": 9
+      },
+      "id": 17,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "showThresholdMarkers": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"energy\") |> range(start: -1m) |> filter(fn: (r) => r._measurement == \"tank\" and r._field == \"level_2\") |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Tank 2",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "dfc7vpajxvvuob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "options": {
+                "1": {
+                  "color": "#73BF69",
+                  "text": "ON"
+                }
+              },
+              "type": "value"
+            },
+            {
+              "options": {
+                "0": {
+                  "color": "#8AB8FF",
+                  "text": "OFF"
+                }
+              },
+              "type": "value"
+            }
+          ]
+        }
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 3,
+        "x": 21,
+        "y": 9
+      },
+      "id": 18,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"energy\") |> range(start: -1m) |> filter(fn: (r) => r._measurement == \"shelly\" and r._field == \"output_state\") |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Shelly",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 12
+      },
+      "id": 19,
+      "title": "Today's Energy",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "dfc7vpajxvvuob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#FADE2A",
+            "mode": "fixed"
+          },
+          "decimals": 2,
+          "unit": "kWh"
+        }
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 6,
+        "x": 0,
+        "y": 13
+      },
+      "id": 20,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "dcEnergy = from(bucket: \"energy\") |> range(start: today()) |> filter(fn: (r) => r._measurement == \"solar\" and r._field == \"power\") |> aggregateWindow(every: 1m, fn: mean, createEmpty: false) |> integral(unit: 1h)\nacEnergy = from(bucket: \"energy\") |> range(start: today()) |> filter(fn: (r) => r._measurement == \"pvinverter\" and r._field == \"power\") |> aggregateWindow(every: 1m, fn: mean, createEmpty: false) |> integral(unit: 1h)\nunion(tables: [dcEnergy, acEnergy]) |> group() |> sum() |> map(fn: (r) => ({r with _value: r._value / 1000.0}))",
+          "refId": "A"
+        }
+      ],
+      "title": "Solar Generated",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "dfc7vpajxvvuob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#C4162A",
+            "mode": "fixed"
+          },
+          "decimals": 2,
+          "unit": "kWh"
+        }
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 6,
+        "x": 6,
+        "y": 13
+      },
+      "id": 21,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"energy\") |> range(start: today()) |> filter(fn: (r) => r._measurement == \"grid\" and r._field == \"power_total\") |> filter(fn: (r) => r._value > 0) |> aggregateWindow(every: 1m, fn: mean, createEmpty: false) |> integral(unit: 1h) |> map(fn: (r) => ({r with _value: r._value / 1000.0}))",
+          "refId": "A"
+        }
+      ],
+      "title": "Grid Import",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "dfc7vpajxvvuob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#73BF69",
+            "mode": "fixed"
+          },
+          "decimals": 2,
+          "unit": "kWh"
+        }
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 6,
+        "x": 12,
+        "y": 13
+      },
+      "id": 22,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"energy\") |> range(start: today()) |> filter(fn: (r) => r._measurement == \"grid\" and r._field == \"power_total\") |> filter(fn: (r) => r._value < 0) |> aggregateWindow(every: 1m, fn: mean, createEmpty: false) |> integral(unit: 1h) |> map(fn: (r) => ({r with _value: r._value / -1000.0}))",
+          "refId": "A"
+        }
+      ],
+      "title": "Grid Export",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "dfc7vpajxvvuob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#8AB8FF",
+            "mode": "fixed"
+          },
+          "decimals": 2,
+          "unit": "kWh"
+        }
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 6,
+        "x": 18,
+        "y": 13
+      },
+      "id": 23,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"energy\") |> range(start: today()) |> filter(fn: (r) => r._measurement == \"inverter\" and r._field == \"ac_power\") |> aggregateWindow(every: 1m, fn: mean, createEmpty: false) |> integral(unit: 1h) |> map(fn: (r) => ({r with _value: r._value / 1000.0}))",
+          "refId": "A"
+        }
+      ],
+      "title": "Consumed",
+      "type": "stat"
+    }
+  ],
+  "refresh": "5s",
+  "tags": [
+    "victron",
+    "energy"
+  ],
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timezone": "browser",
+  "title": "Victron Overview",
+  "uid": "victron-overview",
+  "version": 9
+}

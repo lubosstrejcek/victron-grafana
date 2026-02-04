@@ -1,0 +1,460 @@
+{
+  "id": 7,
+  "panels": [
+    {
+      "gridPos": {
+        "h": 2,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 100,
+      "options": {
+        "content": "<div style=\"display: flex; gap: 10px; justify-content: center; align-items: center; height: 100%;\">\n<a href=\"/d/victron-overview/victron-overview\" style=\"background: #464646; color: white; padding: 8px 20px; border-radius: 4px; text-decoration: none;\">Overview</a>\n<a href=\"/d/victron-energy/victron-energy\" style=\"background: #464646; color: white; padding: 8px 20px; border-radius: 4px; text-decoration: none;\">Energy</a>\n<a href=\"/d/victron-env/victron-environment\" style=\"background: #464646; color: white; padding: 8px 20px; border-radius: 4px; text-decoration: none;\">Environment</a>\n<a href=\"/d/victron-sys/victron-system\" style=\"background: #464646; color: white; padding: 8px 20px; border-radius: 4px; text-decoration: none;\">System</a>\n<span style=\"background: #C4162A; color: white; padding: 8px 20px; border-radius: 4px; font-weight: bold;\">ERRORS</span>\n</div>",
+        "mode": "html"
+      },
+      "title": "",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "dfc7vpajxvvuob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 10
+              }
+            ]
+          }
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 2
+      },
+      "id": 1,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"energy\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop) |> filter(fn: (r) => r._measurement == \"nodered_errors\" and r._field == \"error_count\") |> sum()",
+          "refId": "A"
+        }
+      ],
+      "title": "Total Errors",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "dfc7vpajxvvuob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 5
+              },
+              {
+                "color": "red",
+                "value": 20
+              }
+            ]
+          },
+          "unit": "short"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 2
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"energy\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"nodered_errors\" and r._field == \"error_count\") |> sum()",
+          "refId": "A"
+        }
+      ],
+      "title": "Errors (1h)",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "dfc7vpajxvvuob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 3
+              },
+              {
+                "color": "red",
+                "value": 6
+              }
+            ]
+          }
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 2
+      },
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"energy\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop) |> filter(fn: (r) => r._measurement == \"nodered_errors\" and r._field == \"loop_count\") |> max()",
+          "refId": "A"
+        }
+      ],
+      "title": "Max Loop Count",
+      "type": "stat"
+    },
+    {
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 12,
+        "y": 2
+      },
+      "id": 4,
+      "options": {
+        "content": "<div style=\"padding: 10px; font-size: 14px;\">\n<h4 style=\"margin-top:0\">How to View Detailed Error Messages</h4>\n<table style=\"width:100%\">\n<tr><td style=\"width:40%\"><strong>Node-RED Debug:</strong></td><td><a href=\"http://localhost:1880\" target=\"_blank\">localhost:1880</a> → Tab \"7. Errors\" → Debug sidebar (right panel)</td></tr>\n<tr><td><strong>Docker Logs:</strong></td><td><code>docker logs victron-nodered --tail 100</code></td></tr>\n<tr><td><strong>Test Errors:</strong></td><td><a href=\"http://localhost:1880\" target=\"_blank\">Node-RED</a> → Tab \"7. Errors\" → Click inject buttons</td></tr>\n</table>\n<p style=\"margin-bottom:0\"><em>Note: Full error messages with stack traces are in Node-RED debug sidebar.</em></p>\n</div>",
+        "mode": "html"
+      },
+      "title": "View Detailed Logs",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "dfc7vpajxvvuob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "red",
+            "mode": "fixed"
+          },
+          "custom": {
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 80,
+            "pointSize": 5
+          }
+        }
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 6
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "displayMode": "hidden"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"energy\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop) |> filter(fn: (r) => r._measurement == \"nodered_errors\" and r._field == \"error_count\") |> aggregateWindow(every: 5m, fn: sum, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
+      "title": "Error Timeline",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "dfc7vpajxvvuob"
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 0,
+        "y": 13
+      },
+      "id": 7,
+      "options": {
+        "calculate": true,
+        "calculation": {
+          "xBuckets": {
+            "mode": "size",
+            "value": "1h"
+          },
+          "yBuckets": {
+            "mode": "count",
+            "value": "10"
+          }
+        },
+        "cellGap": 1,
+        "color": {
+          "mode": "scheme",
+          "scheme": "Oranges"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"energy\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop) |> filter(fn: (r) => r._measurement == \"nodered_errors\" and r._field == \"error_count\") |> aggregateWindow(every: 10m, fn: sum, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
+      "title": "Error Distribution by Time",
+      "type": "heatmap"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "dfc7vpajxvvuob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "orange",
+            "mode": "fixed"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 30
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 3
+              },
+              {
+                "color": "red",
+                "value": 6
+              }
+            ]
+          }
+        }
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 12,
+        "y": 13
+      },
+      "id": 8,
+      "options": {
+        "legend": {
+          "displayMode": "hidden"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"energy\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop) |> filter(fn: (r) => r._measurement == \"nodered_errors\" and r._field == \"loop_count\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Loop Count Over Time",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "dfc7vpajxvvuob"
+      },
+      "fieldConfig": {
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "_time"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Time"
+              },
+              {
+                "id": "custom.width",
+                "value": 200
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "error_count"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Count"
+              },
+              {
+                "id": "custom.width",
+                "value": 80
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "loop_count"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Loop"
+              },
+              {
+                "id": "custom.width",
+                "value": 80
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "_start"
+            },
+            "properties": [
+              {
+                "id": "custom.hidden",
+                "value": true
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "_stop"
+            },
+            "properties": [
+              {
+                "id": "custom.hidden",
+                "value": true
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "_measurement"
+            },
+            "properties": [
+              {
+                "id": "custom.hidden",
+                "value": true
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 19
+      },
+      "id": 6,
+      "options": {
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Time"
+          }
+        ]
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"energy\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop) |> filter(fn: (r) => r._measurement == \"nodered_errors\") |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") |> sort(columns: [\"_time\"], desc: true) |> limit(n: 100)",
+          "refId": "A"
+        }
+      ],
+      "title": "Recent Errors (Raw Data)",
+      "type": "table"
+    }
+  ],
+  "refresh": "10s",
+  "tags": [
+    "errors",
+    "victron"
+  ],
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timezone": "browser",
+  "title": "Error Details",
+  "uid": "errors",
+  "version": 5
+}

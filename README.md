@@ -16,18 +16,18 @@ Pre-configured Grafana dashboards for Victron monitoring:
 ## Quick Start
 
 ```bash
-# Run with Docker
-docker run -d --name victron-grafana \
-  -p 3000:3000 \
-  -v $(pwd):/var/lib/grafana \
-  -e GF_SECURITY_ADMIN_PASSWORD=victron123 \
-  -e GF_PANELS_DISABLE_SANITIZE_HTML=true \
-  grafana/grafana:latest
+# Clone and run
+git clone https://github.com/lubosstrejcek/victron-grafana.git
+cd victron-grafana
+cp .env.example .env
+docker compose up -d
 
 # Access UI
 open http://localhost:3000
 # Login: admin / victron123
 ```
+
+**Note:** Requires InfluxDB running. See [victron-influxdb](https://github.com/lubosstrejcek/victron-influxdb).
 
 ## Dashboards
 
